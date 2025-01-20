@@ -44,3 +44,43 @@ plt.show()
 # Mostrar el circuito
 print("Circuito Cuántico:")
 print(circuit)
+
+# EJEMPLO ADICIONAL
+# Crear un segundo circuito con dos qubits para demostrar entrelazamiento
+qubit1 = cirq.GridQubit(1, 0)
+qubit2 = cirq.GridQubit(1, 1)
+
+# Construir el circuito
+circuit_entrelazado = cirq.Circuit()
+
+# 1. Crear superposición en el primer qubit
+circuit_entrelazado.append(cirq.H(qubit1))
+
+# 2. Entrelazar los qubits usando una puerta CNOT
+circuit_entrelazado.append(cirq.CNOT(qubit1, qubit2))
+
+# 3. Medir ambos qubits
+circuit_entrelazado.append(cirq.measure(qubit1, key='result1'))
+circuit_entrelazado.append(cirq.measure(qubit2, key='result2'))
+
+# Ejecutar el segundo circuito varias veces
+resultados_entrelazados = simulator.run(circuit_entrelazado, repetitions=1000)
+
+# Obtener las frecuencias de los resultados
+frecuencias_entrelazadas = resultados_entrelazados.multi_measurement_histogram(keys=['result1', 'result2'])
+
+# Preparar los datos para graficar
+labels_entrelazados = [f"{key[0]}{key[1]}" for key in frecuencias_entrelazadas.keys()]
+valores_entrelazados = list(frecuencias_entrelazadas.values())
+
+# Graficar los resultados del entrelazamiento
+plt.bar(labels_entrelazados, valores_entrelazados, color=['green', 'red', 'purple', 'cyan'])
+plt.title("Resultados del entrelazamiento cuántico")
+plt.xlabel("Estados medidos (Qubit1Qubit2)")
+plt.ylabel("Frecuencia")
+plt.show()
+
+# Mostrar el circuito entrelazado
+print("Circuito Cuántico para Entrelazamiento:")
+print(circuit_entrelazado)
+
