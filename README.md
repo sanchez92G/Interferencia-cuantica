@@ -1,4 +1,4 @@
-# Interferencia-cuantica
+# Interferencia cuántica con un ejemplo adicional
 !pip install cirq
 import cirq
 import numpy as np
@@ -46,41 +46,41 @@ print("Circuito Cuántico:")
 print(circuit)
 
 # EJEMPLO ADICIONAL
-# Crear un segundo circuito con dos qubits para demostrar entrelazamiento
-qubit1 = cirq.GridQubit(1, 0)
-qubit2 = cirq.GridQubit(1, 1)
+# Crear un segundo ejemplo de interferencia cuántica
+qubit_extra = cirq.GridQubit(1, 0)
 
 # Construir el circuito
-circuit_entrelazado = cirq.Circuit()
+circuit_extra = cirq.Circuit()
 
-# 1. Crear superposición en el primer qubit
-circuit_entrelazado.append(cirq.H(qubit1))
+# 1. Crear superposición inicial
+circuit_extra.append(cirq.H(qubit_extra))
 
-# 2. Entrelazar los qubits usando una puerta CNOT
-circuit_entrelazado.append(cirq.CNOT(qubit1, qubit2))
+# 2. Aplicar una puerta de fase S (cuadrada de Z) para cambiar la fase
+circuit_extra.append(cirq.S(qubit_extra))
 
-# 3. Medir ambos qubits
-circuit_entrelazado.append(cirq.measure(qubit1, key='result1'))
-circuit_entrelazado.append(cirq.measure(qubit2, key='result2'))
+# 3. Aplicar otra puerta Hadamard para interferencia
+circuit_extra.append(cirq.H(qubit_extra))
+
+# 4. Medir el qubit
+circuit_extra.append(cirq.measure(qubit_extra, key='result_extra'))
 
 # Ejecutar el segundo circuito varias veces
-resultados_entrelazados = simulator.run(circuit_entrelazado, repetitions=1000)
+resultados_extra = simulator.run(circuit_extra, repetitions=1000)
 
 # Obtener las frecuencias de los resultados
-frecuencias_entrelazadas = resultados_entrelazados.multi_measurement_histogram(keys=['result1', 'result2'])
+frecuencias_extra = resultados_extra.histogram(key='result_extra')
 
-# Preparar los datos para graficar
-labels_entrelazados = [f"{key[0]}{key[1]}" for key in frecuencias_entrelazadas.keys()]
-valores_entrelazados = list(frecuencias_entrelazadas.values())
+# Graficar los resultados
+labels_extra = ['0', '1']
+valores_extra = [frecuencias_extra[0] if 0 in frecuencias_extra else 0, frecuencias_extra[1] if 1 in frecuencias_extra else 0]
 
-# Graficar los resultados del entrelazamiento
-plt.bar(labels_entrelazados, valores_entrelazados, color=['green', 'red', 'purple', 'cyan'])
-plt.title("Resultados del entrelazamiento cuántico")
-plt.xlabel("Estados medidos (Qubit1Qubit2)")
+plt.bar(labels_extra, valores_extra, color=['purple', 'green'])
+plt.title("Resultados de la interferencia cuántica (Ejemplo Adicional)")
+plt.xlabel("Estado medido")
 plt.ylabel("Frecuencia")
 plt.show()
 
-# Mostrar el circuito entrelazado
-print("Circuito Cuántico para Entrelazamiento:")
-print(circuit_entrelazado)
+# Mostrar el circuito adicional
+print("Circuito Cuántico Adicional:")
+print(circuit_extra)
 
